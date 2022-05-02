@@ -13,12 +13,12 @@ import org.springframework.stereotype.Service;
  * @date 2022/5/1 13:31
  */
 @Service
-public class ShortUrlServiceImpl implements ShortUrlService {
+public class IdShortUrlService implements ShortUrlService {
     private final ShortUrlIdSubservice shortUrlIdSubservice;
     private final ShortUrlRepository shortUrlRepository;
 
     @Autowired
-    public ShortUrlServiceImpl(ShortUrlIdSubservice shortUrlIdSubservice, ShortUrlRepository shortUrlRepository) {
+    public IdShortUrlService(ShortUrlIdSubservice shortUrlIdSubservice, ShortUrlRepository shortUrlRepository) {
         this.shortUrlIdSubservice = shortUrlIdSubservice;
         this.shortUrlRepository = shortUrlRepository;
     }
@@ -33,7 +33,7 @@ public class ShortUrlServiceImpl implements ShortUrlService {
     public String save(String originUrl) throws OutOfIdLimitException, OutOfStoreLimitException {
         long id = shortUrlIdSubservice.generate();
         String shortUrl = transform(id);
-        if (shortUrl.length() > SHORT_URL_MAX_LEN) {
+        if (shortUrl.length() > IdShortUrlService.SHORT_URL_MAX_LEN) {
             throw new OutOfIdLimitException();
         }
         shortUrlRepository.save(originUrl, shortUrl);
@@ -53,10 +53,10 @@ public class ShortUrlServiceImpl implements ShortUrlService {
 
     private String transform(long id) {
         StringBuilder buf = new StringBuilder();
-        int scale = DIGITS.length;
+        int scale = IdShortUrlService.DIGITS.length;
         while (id > 0) {
             long remainder = id % scale;
-            buf.append(DIGITS[(int) remainder]);
+            buf.append(IdShortUrlService.DIGITS[(int) remainder]);
             id /= scale;
         }
         return buf.toString();

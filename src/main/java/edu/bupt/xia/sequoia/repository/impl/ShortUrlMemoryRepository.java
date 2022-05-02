@@ -13,16 +13,6 @@ import java.util.Map;
  */
 @Repository
 public class ShortUrlMemoryRepository implements ShortUrlRepository {
-    private Map<String, String> memoryStore;
-    private boolean isOutOfLimit;
-
-    public ShortUrlMemoryRepository() {
-        super();
-
-        memoryStore = new HashMap<>();
-        isOutOfLimit = false;
-    }
-
     /**
      * 保存原域名和短域名的对应关系
      *
@@ -32,14 +22,14 @@ public class ShortUrlMemoryRepository implements ShortUrlRepository {
      */
     @Override
     public void save(String originUrl, String shortUrl) throws OutOfStoreLimitException {
-        if (isOutOfLimit) {
+        if (ShortUrlMemoryRepository.isOutOfLimit) {
             throw new OutOfStoreLimitException();
         }
 
         try {
-            memoryStore.put(shortUrl, originUrl);
+            ShortUrlMemoryRepository.MEMORY_STORE.put(shortUrl, originUrl);
         } catch (OutOfMemoryError e) {
-            isOutOfLimit = true;
+            ShortUrlMemoryRepository.isOutOfLimit = true;
             throw new OutOfStoreLimitException();
         }
     }
@@ -52,6 +42,9 @@ public class ShortUrlMemoryRepository implements ShortUrlRepository {
      */
     @Override
     public String query(String shortUrl) {
-        return memoryStore.get(shortUrl);
+        return ShortUrlMemoryRepository.MEMORY_STORE.get(shortUrl);
     }
+
+    private static final Map<String, String> MEMORY_STORE = new HashMap<>();
+    private static boolean isOutOfLimit;
 }
