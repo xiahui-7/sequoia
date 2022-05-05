@@ -11,8 +11,8 @@ public interface ShortUrlRepository {
      * 保存原域名和短域名的对应关系
      *
      * @param originUrl 原域名
-     * @param shortUrl 短域名
-     * @throws OutOfStoreLimitException  超出存储器容量限制
+     * @param shortUrl  短域名
+     * @throws OutOfStoreLimitException 超出存储器容量限制
      */
     void save(String originUrl, String shortUrl) throws OutOfStoreLimitException;
 

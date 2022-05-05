@@ -6,8 +6,8 @@ package edu.bupt.xia.sequoia.exception;
  * @author xiahui
  * @date 2022/5/1 14:16
  */
-public class OutOfIdLimitException extends RuntimeException {
-    public OutOfIdLimitException() {
+public class OutOfLengthException extends RuntimeException {
+    public OutOfLengthException() {
         super();
     }
 }

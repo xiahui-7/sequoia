@@ -1,6 +1,6 @@
 package edu.bupt.xia.sequoia.service;
 
-import edu.bupt.xia.sequoia.exception.OutOfIdLimitException;
+import edu.bupt.xia.sequoia.exception.OutOfLengthException;
 import edu.bupt.xia.sequoia.exception.OutOfStoreLimitException;
 
 /**
@@ -13,8 +13,10 @@ public interface ShortUrlService {
      *
      * @param originUrl 原域名
      * @return 短域名
+     * @throws OutOfLengthException     短域名长度超限
+     * @throws OutOfStoreLimitException 超出存储器容量限制
      */
-    String save(String originUrl) throws OutOfIdLimitException, OutOfStoreLimitException;
+    String save(String originUrl) throws OutOfLengthException, OutOfStoreLimitException;
 
     /**
      * 短域名读取接口：接受短域名信息，返回长域名信息

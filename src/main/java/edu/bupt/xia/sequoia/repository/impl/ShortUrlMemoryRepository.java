@@ -17,8 +17,8 @@ public class ShortUrlMemoryRepository implements ShortUrlRepository {
      * 保存原域名和短域名的对应关系
      *
      * @param originUrl 原域名
-     * @param shortUrl `短域名
-     * @throws OutOfStoreLimitException  超出存储器容量限制
+     * @param shortUrl  短域名
+     * @throws OutOfStoreLimitException 超出存储器容量限制
      */
     @Override
     public void save(String originUrl, String shortUrl) throws OutOfStoreLimitException {
@@ -37,7 +37,7 @@ public class ShortUrlMemoryRepository implements ShortUrlRepository {
     /**
      * 根据短域名查询原域名
      *
-     * @param shortUrl  短域名
+     * @param shortUrl 短域名
      * @return 原域名
      */
     @Override
@@ -46,5 +46,5 @@ public class ShortUrlMemoryRepository implements ShortUrlRepository {
     }
 
     private static final Map<String, String> MEMORY_STORE = new HashMap<>();
-    private static boolean isOutOfLimit;
+    private static boolean isOutOfLimit = false;
 }

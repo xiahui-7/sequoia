@@ -1,11 +1,12 @@
 package edu.bupt.xia.sequoia.controller;
 
+import edu.bupt.xia.sequoia.exception.OutOfLengthException;
+import edu.bupt.xia.sequoia.exception.OutOfStoreLimitException;
 import edu.bupt.xia.sequoia.service.ShortUrlService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author xiahui
@@ -30,6 +31,11 @@ public class ShortUrlController {
     @PostMapping("/save")
     public String save(String originUrl) {
         return shortUrlService.save(originUrl);
+    }
+
+    @ExceptionHandler({OutOfLengthException.class, OutOfStoreLimitException.class})
+    public ResponseEntity<String> saveError() {
+        return new ResponseEntity<>("空间不足无法完成短域名存储", HttpStatus.BAD_REQUEST);
     }
 
     /**

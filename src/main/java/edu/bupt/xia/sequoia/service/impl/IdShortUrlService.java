@@ -1,10 +1,10 @@
 package edu.bupt.xia.sequoia.service.impl;
 
-import edu.bupt.xia.sequoia.exception.OutOfIdLimitException;
+import edu.bupt.xia.sequoia.exception.OutOfLengthException;
 import edu.bupt.xia.sequoia.exception.OutOfStoreLimitException;
 import edu.bupt.xia.sequoia.repository.ShortUrlRepository;
-import edu.bupt.xia.sequoia.subservice.ShortUrlIdSubservice;
 import edu.bupt.xia.sequoia.service.ShortUrlService;
+import edu.bupt.xia.sequoia.subservice.ShortUrlIdSubservice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,16 +28,18 @@ public class IdShortUrlService implements ShortUrlService {
      *
      * @param originUrl 原域名
      * @return 短域名
+     * @throws OutOfLengthException     短域名长度超限
+     * @throws OutOfStoreLimitException 超出存储器容量限制
      */
     @Override
-    public String save(String originUrl) throws OutOfIdLimitException, OutOfStoreLimitException {
+    public String save(String originUrl) throws OutOfLengthException, OutOfStoreLimitException {
         long id = shortUrlIdSubservice.generate();
-        String shortUrl = transform(id);
-        if (shortUrl.length() > IdShortUrlService.SHORT_URL_MAX_LEN) {
-            throw new OutOfIdLimitException();
+        String shortId = transform(id);
+        if (shortId.length() > IdShortUrlService.SHORT_URL_MAX_LEN) {
+            throw new OutOfLengthException();
         }
-        shortUrlRepository.save(originUrl, shortUrl);
-        return shortUrl;
+        shortUrlRepository.save(originUrl, shortId);
+        return addPrefix(shortId);
     }
 
     /**
@@ -48,7 +50,16 @@ public class IdShortUrlService implements ShortUrlService {
      */
     @Override
     public String query(String shortUrl) {
-        return shortUrlRepository.query(shortUrl);
+        String shortId = delPrefix(shortUrl);
+        return shortUrlRepository.query(shortId);
+    }
+
+    private String addPrefix(String shortId) {
+        return IdShortUrlService.SHORT_URL_PREFIX + shortId;
+    }
+
+    private String delPrefix(String shortUrl) {
+        return shortUrl.substring(IdShortUrlService.SHORT_URL_PREFIX.length());
     }
 
     private String transform(long id) {
@@ -74,6 +85,6 @@ public class IdShortUrlService implements ShortUrlService {
             '8', 'I', 'i', 'S', 's',
             '9', 'J', 'j', 'T', 't'
     };
-
     private static final int SHORT_URL_MAX_LEN = 8;
+    private static final String SHORT_URL_PREFIX = "https://www.short.org/";
 }
